@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Border VAT Invoice Processor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        h2 {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background: #fff;
+        }
+
+        .vat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .vat-card h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .vat-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .vat-line:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #667eea;
+        }
+
+        .label {
+            color: #6c757d;
+        }
+
+        .value {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .explanation {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .explanation h4 {
+            color: #0066cc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .explanation p {
+            color: #495057;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧾 Cross-Border VAT Invoice Processor</h1>
+            <p class="subtitle">UK-Ireland VAT Treatment Calculator for Tax Professionals</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Invoice Details</h2>
+                
+                <div class="form-group">
+                    <label>Invoice Number</label>
+                    <input type="text" id="invoiceNumber" value="INV-2024-001" placeholder="e.g., INV-2024-001">
+                </div>
+
+                <div class="form-group">
+                    <label>Supplier (Irish Entity)</label>
+                    <input type="text" id="supplierName" value="Dublin Tech Solutions Ltd" placeholder="Company name">
+                </div>
+
+                <div class="form-group">
+                    <label>Supplier VAT Number (IE)</label>
+                    <input type="text" id="supplierVAT" value="IE1234567L" placeholder="IE1234567L">
+                </div>
+
+                <div class="form-group">
+                    <label>Customer (UK Entity)</label>
+                    <input type="text" id="customerName" value="London Services Corp" placeholder="Company name">
+                </div>
+
+                <div class="form-group">
+                    <label>Customer VAT Number (UK)</label>
+                    <input type="text" id="customerVAT" value="GB123456789" placeholder="GB123456789">
+                </div>
+
+                <div class="form-group">
+                    <label>Net Amount (€)</label>
+                    <input type="number" id="netAmount" value="10000" placeholder="0.00" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label>Type of Supply</label>
+                    <select id="supplyType">
+                        <option value="goods">Goods</option>
+                        <option value="services" selected>Services</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="validVAT" checked>
+                    <label for="validVAT">Customer has valid UK VAT number</label>
+                </div>
+
+                <button onclick="processInvoice()">Process Invoice</button>
+            </div>
+
+            <div class="results-section" id="results">
+                <div style="text-align: center; color: #6c757d; padding: 50px 20px;">
+                    <p>👈 Enter invoice details and click "Process Invoice" to see VAT treatment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function processInvoice() {
+            const invoiceNumber = document.getElementById('invoiceNumber').value;
+            const supplierName = document.getElementById('supplierName').value;
+            const supplierVAT = document.getElementById('supplierVAT').value;
+            const customerName = document.getElementById('customerName').value;
+            const customerVAT = document.getElementById('customerVAT').value;
+            const netAmount = parseFloat(document.getElementById('netAmount').value) || 0;
+            const supplyType = document.getElementById('supplyType').value;
+            const validVAT = document.getElementById('validVAT').checked;
+
+            let html = '';
+
+            // Determine VAT treatment
+            let irishVAT = 0;
+            let irishVATRate = 0;
+            let ukVAT = 0;
+            let ukVATRate = 20; // Standard UK VAT rate
+            let reverseCharge = false;
+
+            if (validVAT) {
+                // B2B with valid VAT - reverse charge applies
+                reverseCharge = true;
+                irishVAT = 0;
+                irishVATRate = 0;
+                ukVAT = netAmount * (ukVATRate / 100);
+            } else {
+                // B2C or invalid VAT - Irish VAT applies
+                irishVATRate = 23; // Standard Irish VAT rate
+                irishVAT = netAmount * (irishVATRate / 100);
+                ukVAT = 0;
+            }
+
+            // Alert section
+            if (reverseCharge) {
+                html += `<div class="alert success">✓ Reverse charge mechanism applies - Zero-rated supply in Ireland</div>`;
+            } else {
+                html += `<div class="alert">⚠ No valid UK VAT number - Irish VAT applies at standard rate</div>`;
+            }
+
+            // Irish VAT3 Return
+            html += `
+                <div class="vat-card">
+                    <h3>🇮🇪 Irish VAT3 Return</h3>
+                    <div class="vat-line">
+                        <span class="label">Supplier:</span>
+                        <span class="value">${supplierName}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">VAT Number:</span>
+                        <span class="value">${supplierVAT}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Invoice Number:</span>
+                        <span class="value">${invoiceNumber}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Net Amount:</span>
+                        <span class="value">€${netAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">VAT Rate:</span>
+                        <span class="value">${irishVATRate}%</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">VAT Amount:</span>
+                        <span class="value">€${irishVAT.toFixed(2)}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Total Invoice:</span>
+                        <span class="value">€${(netAmount + irishVAT).toFixed(2)}</span>
+                    </div>
+                    
+                    <div class="explanation">
+                        <h4>VAT3 Treatment:</h4>
+                        <p>${reverseCharge ? 
+                            `<strong>Box T1 (Zero-rated supplies):</strong> €${netAmount.toFixed(2)}<br>
+                            This is an intra-EU B2B supply of ${supplyType}. Under the reverse charge mechanism, the supply is zero-rated in Ireland. The customer accounts for VAT in the UK.` 
+                            : 
+                            `<strong>Box T2 (Taxable supplies at 23%):</strong> €${netAmount.toFixed(2)}<br>
+                            <strong>VAT on sales:</strong> €${irishVAT.toFixed(2)}<br>
+                            No valid UK VAT number provided, so Irish VAT at 23% applies.`
+                        }</p>
+                    </div>
+                </div>
+            `;
+
+            // UK VAT Return
+            html += `
+                <div class="vat-card">
+                    <h3>🇬🇧 UK VAT Return</h3>
+                    <div class="vat-line">
+                        <span class="label">Customer:</span>
+                        <span class="value">${customerName}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">VAT Number:</span>
+                        <span class="value">${customerVAT}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Invoice Number:</span>
+                        <span class="value">${invoiceNumber}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Net Amount:</span>
+                        <span class="value">€${netAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="vat-line">
+                        <span class="label">Reverse Charge VAT (20%):</span>
+                        <span class="value">€${ukVAT.toFixed(2)}</span>
+                    </div>
+                    
+                    <div class="explanation">
+                        <h4>UK VAT Return Treatment:</h4>
+                        <p>${reverseCharge ? 
+                            `<strong>Box 1 (VAT due on sales and outputs):</strong> €${ukVAT.toFixed(2)}<br>
+                            <strong>Box 4 (VAT reclaimed on purchases):</strong> €${ukVAT.toFixed(2)}<br>
+                            <strong>Box 6 (Total value of sales):</strong> €${netAmount.toFixed(2)}<br>
+                            <strong>Box 7 (Total value of purchases):</strong> €${netAmount.toFixed(2)}<br><br>
+                            Under the reverse charge mechanism, the UK customer must account for VAT at 20% in Box 1 and can reclaim it in Box 4 (if the purchase is for business use). The net effect is typically neutral.` 
+                            : 
+                            `No UK VAT implications as Irish VAT was charged at source. This is a standard purchase from an EU supplier.<br><br>
+                            <strong>Box 7 (Total value of purchases):</strong> €${(netAmount + irishVAT).toFixed(2)} (including Irish VAT)<br>
+                            The Irish VAT charged cannot be reclaimed on the UK VAT return.`
+                        }</p>
+                    </div>
+                </div>
+            `;
+
+            // Summary
+            html += `
+                <div class="vat-card">
+                    <h3>📊 Summary</h3>
+                    <div class="explanation">
+                        <h4>Key Points:</h4>
+                        <p>
+                            • <strong>Transaction type:</strong> ${reverseCharge ? 'B2B Reverse Charge' : 'B2C or Invalid VAT'}<br>
+                            • <strong>Irish seller reports:</strong> ${reverseCharge ? 'Zero-rated EU supply' : '€' + irishVAT.toFixed(2) + ' VAT collected'}<br>
+                            • <strong>UK buyer handles:</strong> ${reverseCharge ? 'Reverse charge (VAT neutral if fully recoverable)' : 'No UK VAT implications'}<br>
+                            • <strong>Invoice should show:</strong> ${reverseCharge ? '"Reverse charge applies - customer to account for VAT"' : 'Irish VAT at 23%'}
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('results').innerHTML = html;
+        }
+
+        // Process on load with default values
+        window.onload = function() {
+            processInvoice();
+        };
+    </script>
+</body>
+</html>
